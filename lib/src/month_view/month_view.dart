@@ -127,6 +127,8 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Default value is [WeekDays.monday].
   final WeekDays startDay;
 
+  final PageController? pageController;
+
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -152,6 +154,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.headerStringBuilder,
     this.dateStringBuilder,
     this.weekDayStringBuilder,
+    this.pageController,
   }) : super(key: key);
 
   @override
@@ -201,7 +204,8 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _regulateCurrentDate();
 
     // Initialize page controller to control page actions.
-    _pageController = PageController(initialPage: _currentIndex);
+    _pageController = widget.pageController ?? PageController();
+    _pageController.jumpToPage(_currentIndex);
 
     _assignBuilders();
   }
