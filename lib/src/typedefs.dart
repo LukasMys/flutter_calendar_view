@@ -29,6 +29,12 @@ typedef DateWidgetBuilder = Widget Function(
   DateTime date,
 );
 
+typedef MonthViewHeaderBuilder = Widget Function(
+  DateTime date,
+  VoidCallback previousPage,
+  VoidCallback nextPage,
+);
+
 typedef CalendarPageChangeCallBack = void Function(DateTime date, int page);
 
 typedef PageChangeCallback = void Function(

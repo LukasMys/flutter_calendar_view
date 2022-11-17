@@ -22,7 +22,7 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Builds month page title.
   ///
   /// Used default title builder if null.
-  final DateWidgetBuilder? headerBuilder;
+  final MonthViewHeaderBuilder? headerBuilder;
 
   /// This function will generate DateString in the calendar header.
   /// Useful for I18n
@@ -127,8 +127,6 @@ class MonthView<T extends Object?> extends StatefulWidget {
   /// Default value is [WeekDays.monday].
   final WeekDays startDay;
 
-  final PageController? pageController;
-
   /// Main [Widget] to display month view.
   const MonthView({
     Key? key,
@@ -154,7 +152,6 @@ class MonthView<T extends Object?> extends StatefulWidget {
     this.headerStringBuilder,
     this.dateStringBuilder,
     this.weekDayStringBuilder,
-    this.pageController,
   }) : super(key: key);
 
   @override
@@ -184,7 +181,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
 
   late WeekDayBuilder _weekBuilder;
 
-  late DateWidgetBuilder _headerBuilder;
+  late MonthViewHeaderBuilder _headerBuilder;
 
   EventController<T>? _controller;
 
@@ -204,8 +201,7 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
     _regulateCurrentDate();
 
     // Initialize page controller to control page actions.
-    _pageController = widget.pageController ?? PageController();
-    _pageController.jumpToPage(_currentIndex);
+    _pageController = PageController(initialPage: _currentIndex);
 
     _assignBuilders();
   }
@@ -277,7 +273,11 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
           children: [
             Container(
               width: _width,
-              child: _headerBuilder(_currentDate),
+              child: _headerBuilder(
+                _currentDate,
+                previousPage,
+                nextPage,
+              ),
             ),
             Expanded(
               child: PageView.builder(
@@ -436,7 +436,11 @@ class MonthViewState<T extends Object?> extends State<MonthView<T>> {
   }
 
   /// Default month view header builder
-  Widget _defaultHeaderBuilder(DateTime date) {
+  Widget _defaultHeaderBuilder(
+    DateTime date,
+    VoidCallback previousPage,
+    VoidCallback nextPage,
+  ) {
     return MonthPageHeader(
       onTitleTapped: () async {
         final selectedDate = await showDatePicker(
